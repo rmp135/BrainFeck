@@ -1,0 +1,48 @@
+.highlight {
+  background-color:green;
+  color:white;
+}
+#app {
+  display: flex;
+  flex-direction:row;
+  height:100%;
+}
+#left {
+  width:75%;
+  display:flex;
+  flex-direction:column;
+  border-right: solid 1px grey;
+  display:flex;
+}
+#leftbottom {
+  height:100%;
+  display:flex;
+}
+#right {
+  display:flex;
+  flex-direction:column;
+  width:25%;
+  padding:10px;
+}
+#righttop {
+  flex-grow:1;
+  border-bottom:solid 1px grey;
+}
+#rightbottom {
+  flex-grow:10;
+}
+#appoutput {
+  word-wrap:break-word;
+}
+#memory {
+  display: flex;
+  flex-wrap: wrap;
+}
+.memblock {
+  width: calc(100% * (1/8));
+}
+.CodeMirror {
+  height: inherit;
+  width: 100%;
+}
+
