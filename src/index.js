@@ -3,22 +3,21 @@ import "codemirror/lib/codemirror.css"
 import "./style.css"
 import BrainFeck from "./BrainFeck.js"
 
-let out = [];
 const $ = document.querySelector.bind(document);
 
 const elRunBtn = $("#runBtn");
 const elPauseBtn = $("#pauseBtn");
+const elStepBtn = $("#stepBtn");
 const elTextInput = $("#userinput");
 const elOut = $("#appoutput");
 const elInstructions = $("#instructions");
 const elMemory = $("#memory");
 
-elTextInput.disabled = true;
-
+const breakPoints = new Set();
+const memoryBlocks = [];
 let marker = null;
-let breakPoints = new Set();
-let memoryBlocks = [];
 let oldMemPointer = 0;
+let out = [];
 
 const editor = CodeMirror.fromTextArea(elInstructions, {
   lineNumbers: true,
@@ -50,7 +49,7 @@ editor.on("gutterClick", (cm, n) => {
 const brain = new BrainFeck();
 
 brain.memory.forEach((m) => {
-  let block = document.createElement("div");
+  const block = document.createElement("div");
   block.classList.add("memblock");
   block.innerText = "0";
   memoryBlocks.push(block);
@@ -60,6 +59,7 @@ brain.memory.forEach((m) => {
 brain
 .on("awaiting", (cb) => {
   elPauseBtn.disabled = true;
+  elStepBtn.disabled = true;
   elTextInput.disabled = false;
 })
 .on("output", (e) => {
@@ -68,7 +68,7 @@ brain
 })
 .on("instruction", (self) => {
   memoryBlocks[oldMemPointer].classList.remove("highlight");
-  let pos = editor.posFromIndex(self.instPointer);
+  const pos = editor.posFromIndex(self.instPointer);
   if (marker !== null) {
     marker.clear();
   }
@@ -78,11 +78,13 @@ brain
   oldMemPointer = self.memPointer;
   if (pos.ch === 0 && breakPoints.has(pos.line)) {
     elPauseBtn.disabled = false;
+    elStepBtn.disabled = false;
     self.state = "PAUSED";
     elPauseBtn.value = "Resume";
   }
 })
 .on("complete", (self) => {
+  elStepBtn.disabled = true;
   elRunBtn.disabled = false;
   elPauseBtn.disabled = true;
   editor.setOption("readOnly", false);
@@ -90,10 +92,15 @@ brain
   self.reset();
 });
 
+elStepBtn.addEventListener("click", () => {
+  brain.step();
+});
+
 elPauseBtn.addEventListener("click", () => {
   if (elPauseBtn.value === "Pause") {
     brain.state = "PAUSED";
     elPauseBtn.value = "Resume";
+    elStepBtn.disabled = false;
   }
   else {
     elPauseBtn.value = "Resume";

@@ -32,8 +32,8 @@ export default class BrainFeck  {
     this.eventEmitter.emit(event, props);
     return this;
   }
-  executeInstruction () {
-    switch (this.instructions[this.instPointer]) {
+  executeInstruction (instruction) {
+    switch (instruction) {
       case ">":
         this.memPointer++;
         if (this.memPointer >= this.memory.length) throw new Error("Memory pointer overflow.");
@@ -107,6 +107,10 @@ export default class BrainFeck  {
     }
     this.eventEmitter.emit('instruction', this);
   }
+  step () {
+    this.executeInstruction(this.instructions[this.instPointer]);
+    this.instPointer++;
+  }
   run () {
     function _run() {
       if (this.state === "RUNNING") {
@@ -114,8 +118,7 @@ export default class BrainFeck  {
           this.eventEmitter.emit('complete', this);
           return;
         }
-        this.executeInstruction();
-        this.instPointer++;
+        this.step();
       }
       setTimeout(_run.bind(this), 1);
     }
@@ -123,4 +126,3 @@ export default class BrainFeck  {
     return this;    
   }
 }
-
