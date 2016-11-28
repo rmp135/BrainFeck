@@ -45,4 +45,9 @@
   height: inherit;
   width: 100%;
 }
-
+.CodeMirror .breakpoints {
+  width: 0.8em;
+}
+.CodeMirror .breakpoints .breakpoint {
+  color: #822;
+}

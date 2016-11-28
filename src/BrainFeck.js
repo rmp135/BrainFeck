@@ -7,7 +7,7 @@ export default class BrainFeck  {
     this.instPointer = 0;
     this.instructions = [];
     this.setInstructions(instructions);
-    this.state = "RUNNING"; //RUNNING | AWAITING
+    this.state = "RUNNING"; //RUNNING | AWAITING | PAUSED
     this.eventEmitter = new EventEmitter();
   }
   setInstructions (instructions) {
