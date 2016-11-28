@@ -33,6 +33,22 @@ describe("BrainFeck", () => {
       });
       bf.run();
     });
+    it("should be delayed by the delay amount", () => {
+      jest.useFakeTimers();
+      bf = new BrainFeck("..");
+      bf.delay = 10;
+      const mock = jest.fn(bf.step);
+      bf.step = mock;
+      bf.run();
+      expect(mock).toHaveBeenCalled();
+      expect(mock.mock.calls.length).toBe(1);
+      mock.mockReset();
+      jest.runTimersToTime(9);
+      expect(mock).not.toHaveBeenCalled();
+      jest.runTimersToTime(10);
+      expect(mock).toHaveBeenCalled();
+      jest.useRealTimers();
+    });
   });
   describe("Step", () => {
     it("should execute the current instruction", () => {
@@ -160,4 +176,4 @@ describe("BrainFeck", () => {
       expect(bf.instPointer).toBe(2);
     });
   });
-);
+});

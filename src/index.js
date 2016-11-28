@@ -12,6 +12,8 @@ const elTextInput = $("#userinput");
 const elOut = $("#appoutput");
 const elInstructions = $("#instructions");
 const elMemory = $("#memory");
+const elSlowerBtn = $("#slowerBtn");
+const elFasterBtn = $("#fasterBtn");
 
 const breakPoints = new Set();
 const memoryBlocks = [];
@@ -90,6 +92,18 @@ brain
   editor.setOption("readOnly", false);
   elOut.innerText = out.join("");
   self.reset();
+});
+
+elSlowerBtn.addEventListener("click", () => {
+  brain.delay = brain.delay * 5;
+  elFasterBtn.disabled = false;
+});
+
+elFasterBtn.addEventListener("click", () => {
+  brain.delay = brain.delay / 5;
+  if (brain.delay === 1) {
+    elFasterBtn.disabled = true;
+  }
 });
 
 elStepBtn.addEventListener("click", () => {
