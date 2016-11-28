@@ -1,7 +1,7 @@
 .highlight {
-  background-color:green;
-  color:white;
+  background-color:rgb(171, 191, 254);
 }
+
 #app {
   display: flex;
   flex-direction:row;
