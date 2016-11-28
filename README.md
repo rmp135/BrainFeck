@@ -16,7 +16,7 @@ or
 
 ## Test
 
-'yarn test`
+`yarn test`
 
 or
 
