@@ -9,6 +9,7 @@ export default class BrainFeck  {
     this.delay = 1;
     this.setInstructions(instructions);
     this.state = "RUNNING"; //RUNNING | AWAITING | PAUSED
+    this.currentTimer = null;
     this.eventEmitter = new EventEmitter();
   }
   setInstructions (instructions) {
@@ -108,6 +109,16 @@ export default class BrainFeck  {
     }
     this.eventEmitter.emit('instruction', this);
   }
+  stop () {
+    if (this.currentTimer != null) {
+      clearTimeout(this.currentTimer);
+      this.state = "RUNNING";
+      this.currentTimer = null;
+      this.instPointer = 0;
+      this.memPointer = 0;
+      this.memory.forEach((m, i, memory) => memory[i] = 0);
+    }
+  }
   step () {
     this.executeInstruction(this.instructions[this.instPointer]);
     this.instPointer++;
@@ -121,7 +132,7 @@ export default class BrainFeck  {
         }
         this.step();
       }
-      setTimeout(_run.bind(this), this.delay);
+      this.currentTimer = setTimeout(_run.bind(this), this.delay);
     }
     _run.call(this);
     return this;    

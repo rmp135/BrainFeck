@@ -5,7 +5,7 @@ import BrainFeck from "./BrainFeck.js"
 
 const $ = document.querySelector.bind(document);
 
-const elRunBtn = $("#runBtn");
+const elStartBtn = $("#startBtn");
 const elPauseBtn = $("#pauseBtn");
 const elStepBtn = $("#stepBtn");
 const elTextInput = $("#userinput");
@@ -87,7 +87,7 @@ brain
 })
 .on("complete", (self) => {
   elStepBtn.disabled = true;
-  elRunBtn.disabled = false;
+  elStartBtn.disabled = false;
   elPauseBtn.disabled = true;
   editor.setOption("readOnly", false);
   elOut.innerText = out.join("");
@@ -111,15 +111,17 @@ elStepBtn.addEventListener("click", () => {
 });
 
 elPauseBtn.addEventListener("click", () => {
-  if (elPauseBtn.value === "Pause") {
-    brain.state = "PAUSED";
-    elPauseBtn.value = "Resume";
-    elStepBtn.disabled = false;
-  }
-  else {
-    elPauseBtn.value = "Resume";
-    brain.state = "RUNNING";
-    elPauseBtn.value = "Pause";
+  switch (elPauseBtn.value) {
+    case "Pause":
+      brain.state = "PAUSED";
+      elPauseBtn.value = "Resume";
+      elStepBtn.disabled = false;
+      break;
+    case "Resume":
+      elPauseBtn.value = "Resume";
+      brain.state = "RUNNING";
+      elPauseBtn.value = "Pause";
+      break;
   }
 });
 
@@ -129,17 +131,38 @@ elTextInput.addEventListener("keydown", (e) => {
   elPauseBtn.disabled = false;
 });
 
-elRunBtn.addEventListener("click", () => {
-  elPauseBtn.value = "Pause";
-  elPauseBtn.disabled = false;
-  elOut.innerText = "";
-  out = [];
-  memoryBlocks.forEach((m) => {
-    m.innerText = "0";
-  });
-  elRunBtn.disabled = true;
-  editor.setOption("readOnly", true);
-  brain
-    .setInstructions(editor.getValue())
-    .run()
+elStartBtn.addEventListener("click", () => {
+  const el = editor.getWrapperElement();
+  switch (elStartBtn.value) {
+    case "Stop":
+      elPauseBtn.disabled = true;
+      elStepBtn.disabled = true;
+      elPauseBtn.value = "Pause";
+      memoryBlocks[oldMemPointer].classList.remove("highlight");
+      memoryBlocks.forEach((m) => {
+        m.innerText = "0";
+      });
+      elOut.innerText = "";
+      marker.clear();
+      brain.stop();
+      el.classList.remove("cm-readonly");
+      editor.setOption("readOnly", false);
+      elStartBtn.value = "Start"
+      break;
+    case "Start":
+      elPauseBtn.value = "Pause";
+      elPauseBtn.disabled = false;
+      elOut.innerText = "";
+      out = [];
+      memoryBlocks.forEach((m) => {
+        m.innerText = "0";
+      });
+      el.classList.add("cm-readonly");
+      editor.setOption("readOnly", true);
+      brain
+        .setInstructions(editor.getValue())
+        .run();
+      elStartBtn.value = "Stop";
+      break;
+  }
 });

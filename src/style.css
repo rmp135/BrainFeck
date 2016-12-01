@@ -51,3 +51,6 @@
 .CodeMirror .breakpoints .breakpoint {
   color: #822;
 }
+.CodeMirror.cm-readonly {
+  color: silver;
+}
