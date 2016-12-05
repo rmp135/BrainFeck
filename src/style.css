@@ -27,6 +27,7 @@
 #righttop {
   flex-grow:1;
   border-bottom:solid 1px grey;
+  min-height: 1rem;
 }
 #rightbottom {
   flex-grow:10;
@@ -52,5 +53,5 @@
   color: #822;
 }
 .CodeMirror.cm-readonly {
-  color: silver;
+  color: darkgray;
 }
