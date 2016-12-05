@@ -92,13 +92,7 @@ export default class BrainFeck  {
       case ",": (function() {
         this.state = "AWAITING";
         let callback = (char) => {
-          let key = 0;
-          if (Number.isNaN(Number(char))) {
-            key = char.charCodeAt(0);
-          }
-          else {
-            key = Number(char);
-          }
+          const key = typeof(char) === "string" ? char.charCodeAt(0) : char;
           this.memory[this.memPointer] = key;
           this.state = "RUNNING";
         };

@@ -177,10 +177,19 @@ describe("BrainFeck", () => {
       });
       bf.executeInstruction(",");
     });
-    it("should set the memory location with the callback", (done) => {
+    it("should set the memory location as the charCode when a string is entered", (done) => {
       bf.on("awaiting", (cb) => {
         cb("a");
         expect(bf.memory[0]).toBe(97);
+        expect(bf.state).toBe("RUNNING");
+        done();
+      });
+      bf.executeInstruction(",");
+    });
+    it("should set the memory location when the inputted value is a number", (done) => {
+      bf.on("awaiting", (cb) => {
+        cb(2);
+        expect(bf.memory[0]).toBe(2);
         expect(bf.state).toBe("RUNNING");
         done();
       });

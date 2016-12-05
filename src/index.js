@@ -14,6 +14,7 @@ const elInstructions = $("#instructions");
 const elMemory = $("#memory");
 const elSlowerBtn = $("#slowerBtn");
 const elFasterBtn = $("#fasterBtn");
+const elNumberTypeChk = $("#numberTypeChk");
 
 const breakPoints = new Set();
 const memoryBlocks = [];
@@ -86,13 +87,29 @@ brain
   }
 })
 .on("complete", (self) => {
-  elStepBtn.disabled = true;
-  elStartBtn.disabled = false;
-  elPauseBtn.disabled = true;
-  editor.setOption("readOnly", false);
-  elOut.innerText = out.join("");
+  ResetFrontEnd({ includingData: false });
   self.reset();
 });
+
+// Resets the visuals of the dom for starting again.
+// Optionally, also resets the data.
+function ResetFrontEnd({ includingData }) {
+  elPauseBtn.value = "Pause";
+  elPauseBtn.disabled = true;
+  elStartBtn.value = "Start";
+  elStartBtn.disabled = false;
+  memoryBlocks[oldMemPointer].classList.remove("highlight");
+  marker ? marker.clear() : void(0);
+  editor.setOption("readOnly", false);
+  editor.getWrapperElement().classList.remove("cm-readonly");
+  if (includingData) {
+      memoryBlocks.forEach((m) => {
+        m.innerText = "0";
+      });
+      out = [];
+      elOut.innerText = "";
+  }
+};
 
 elSlowerBtn.addEventListener("click", () => {
   brain.delay = brain.delay * 5;
@@ -126,7 +143,11 @@ elPauseBtn.addEventListener("click", () => {
 });
 
 elTextInput.addEventListener("keydown", (e) => {
-  brain.emit("input", e.key);
+  let key = e.key;
+  if (elNumberTypeChk.checked && !Number.isNaN(e.key)) {
+    key = Number(e.key);
+  };
+  brain.emit("input", key);
   elTextInput.disabled = true;
   elPauseBtn.disabled = false;
 });
@@ -135,28 +156,14 @@ elStartBtn.addEventListener("click", () => {
   const el = editor.getWrapperElement();
   switch (elStartBtn.value) {
     case "Stop":
-      elPauseBtn.disabled = true;
-      elStepBtn.disabled = true;
-      elPauseBtn.value = "Pause";
-      memoryBlocks[oldMemPointer].classList.remove("highlight");
-      memoryBlocks.forEach((m) => {
-        m.innerText = "0";
-      });
-      elOut.innerText = "";
-      marker.clear();
+      ResetFrontEnd({ includingData: true });
       brain.stop();
-      el.classList.remove("cm-readonly");
-      editor.setOption("readOnly", false);
-      elStartBtn.value = "Start"
+      brain.reset();
       break;
     case "Start":
+      ResetFrontEnd({ includingData: true });
       elPauseBtn.value = "Pause";
       elPauseBtn.disabled = false;
-      elOut.innerText = "";
-      out = [];
-      memoryBlocks.forEach((m) => {
-        m.innerText = "0";
-      });
       el.classList.add("cm-readonly");
       editor.setOption("readOnly", true);
       brain
