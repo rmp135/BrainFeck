@@ -22,14 +22,6 @@ or
 
 `npm run test`
 
-If you want to run the tests in watch mode.
-
-`yarn test-watch`
-
-or
-
-`npm run test-watch` 
-
 ## Build
 
 The following minifies the codebase and runs it through babel, shimming the `UInt8Array` to allow for older browsers to use the functional methods.

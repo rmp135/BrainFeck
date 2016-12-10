@@ -1,12 +1,10 @@
 {
-  "name": "brainfckr",
+  "name": "brainfeck",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "private": true,
   "scripts": {
     "test": "jest",
-    "test-watch": "jest --watch",
     "build": "webpack --config configs/webpack.config.live.js",
     "build-dev": "webpack --config configs/webpack.config.dev.js",
     "start": "http-server"
